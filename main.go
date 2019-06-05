@@ -68,7 +68,7 @@ func main() {
 		}
 
 		//400: not writable by user intentionally, these files are auto generated
-		outFile, err := os.OpenFile("/out/"+templateName, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 400)
+		outFile, err := os.OpenFile("/out/"+templateName, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Could not open the file at /out/%s for writing. Did you run this image with -v (output path on host):/out ?\n", templateName)
 			syscall.Exit(1)
@@ -80,6 +80,10 @@ func main() {
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Could not execute the template at %s: %s\n", templatepath, err.Error())
 			syscall.Exit(1)
+		}
+		err = os.Chown("/out/"+templateName, 1001, 1001)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Could not chown the template %s to %d/%d", templateName, 1001, 1001)
 		}
 	}
 
