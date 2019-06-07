@@ -9,7 +9,7 @@ import (
 	"syscall"
 )
 
-func wipeOutputDiretory() error {
+func wipeOutputDirectory() error {
 	files, err := filepath.Glob("/out/*.yaml") //TODO json too?
 	if err != nil {
 		return err
@@ -42,7 +42,7 @@ func main() {
 		syscall.Exit(1)
 	}
 
-	err = wipeOutputDiretory()
+	err = wipeOutputDirectory()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Could not delete the contents of the output directory. Is it mounted read/write? %s\n", err.Error())
 		syscall.Exit(1)
