@@ -8,5 +8,5 @@ In general, you should choose the same template language as your webserver or co
 
 # Usage
 
-1. Build this image: `docker build -t sanic/templater-golang .`
-2. Run this image on the example files: `docker run --rm -v $(pwd)/example/in:/in:ro -v $(pwd)/example/out:/out:rw sanic/templater-golang`
+1. Build this image: `docker build -t distributedcontainers/templater-golang .`
+2. Run this image on the example files: `docker run --rm -v $(pwd)/example/in:/in:ro -v $(pwd)/example/out:/out:rw distributedcontainers/templater-golang`
