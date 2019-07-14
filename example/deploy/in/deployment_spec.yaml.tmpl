@@ -1,0 +1,53 @@
+---
+kind: Deployment
+apiVersion: extensions/v1beta1
+metadata:
+  name: sanic-site
+  labels:
+    k8s-app: sanic-site
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 25%
+  minReadySeconds: 5
+  selector:
+    matchLabels:
+      k8s-app: sanic-site
+  template:
+    metadata:
+      labels:
+        k8s-app: sanic-site
+        name: sanic-site
+    spec:
+      terminationGracePeriodSeconds: {{if eq (getenv "SANIC_ENV") "dev"}}10{{else}}1{{end}}
+      {{if eq (getenv "SANIC_ENV") "dev"}}
+      volumes:
+      - name: devmount
+        hostPath:
+          path: {{getenv "PROJECT_DIR"}}/app
+          type: Directory
+      {{end}}
+      containers:
+      - image: {{getenv "REGISTRY_HOST"}}/sanic-site:{{getenv "IMAGE_TAG"}}
+        name: sanic-site
+        env:
+        - name: SANIC_ENV
+          value: {{getenv "SANIC_ENV"}}
+        ports:
+        - name: http
+          containerPort: 8080
+        {{if eq (getenv "SANIC_ENV") "dev"}}
+        volumeMounts:
+        - mountPath: /go/src/app
+          name: devmount
+        {{end}}
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 5
+
+

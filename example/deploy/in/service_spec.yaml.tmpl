@@ -1,0 +1,14 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: sanic-site
+spec:
+  selector:
+    k8s-app: sanic-site
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8080
+
+
